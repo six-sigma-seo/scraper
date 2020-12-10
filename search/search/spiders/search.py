@@ -70,6 +70,29 @@ class Item(scrapy.Spider):
         meta_twitter = response.xpath(
             '//meta[contains(@name,"twitter")]').getall()
 
+        # New Features
+
+        # Tag Title duplicated
+        title_duplicated = False
+
+        # Old tags
+        old_tags = None
+
+        # Tag Button without Arial-labels
+        arial_tags = None
+
+        # Tags H1 y H2 Counter
+        number_tags_h1 = None
+        number_tags_h2 = None
+
+        # Language Tag
+        language_tag = False
+
+        # Semanthic Structure
+        header = False
+        body = False
+        footer = False
+        
         yield {
             'date': today,
             'titlepage': titlepage,
@@ -93,4 +116,12 @@ class Item(scrapy.Spider):
             'google': meta_google,
             'facebook': meta_facebook,
             'twitter': meta_twitter,
+            'title_duplicated': title_duplicated,
+            'old_tags': old_tags,
+            'arial_tags': arial_tags,
+            'number_tags_h1': number_tags_h1,
+            'number_tags_h2': number_tags_h2,
+            'heder': header,
+            'body': body,
+            'footer': footer
         }
