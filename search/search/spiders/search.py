@@ -73,13 +73,30 @@ class Item(scrapy.Spider):
         # New Features
 
         # Tag Title duplicated
-        title_duplicated = False
+        titles_page = response.xpath('//title/text()').getall()
+        if len(titles_page) == 1:
+            title_duplicated = False
+        else:
+            title_duplicated = True
 
         # Old tags
-        old_tags = None
+        old_tags = []
+        list_old_tags = ['applet', 'acronym', 'bgsound', 'dir', 'frame', 'frameset', 'noframes',
+                         'hgroup', 'isindex', 'listing', 'xmp', 'noembed', 'strike', 'basefont',
+                         'big', 'blink', 'center', 'font', 'marquee', 'multicol', 'nobr', 'spacer'
+                         'tt', 'menu']
+        for tag in list_old_tags:
+            found_tags = response.xpath(f'//{tag}').getall()
+            if len(found_tags) > 0:
+                old_tags.append(found_tags)
+
 
         # Tag Button without Arial-labels
-        arial_tags = None
+        buttons_without_arial_tags = False
+        buttons = response.xpath('//button[not(aria-label)]').getall()
+
+
+
 
         # Tags H1 y H2 Counter
         number_tags_h1 = None
@@ -118,10 +135,10 @@ class Item(scrapy.Spider):
             'twitter': meta_twitter,
             'title_duplicated': title_duplicated,
             'old_tags': old_tags,
-            'arial_tags': arial_tags,
+            'buttons_without_arial_tags': buttons,
             'number_tags_h1': number_tags_h1,
             'number_tags_h2': number_tags_h2,
-            'heder': header,
+            'header': header,
             'body': body,
             'footer': footer
         }
