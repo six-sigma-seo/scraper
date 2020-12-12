@@ -40,6 +40,13 @@ class Item(scrapy.Spider):
             rigthdimentiontitlepage = False
         numbertitlepage = len(response.xpath('//title/text()').getall())
 
+        if numbertitlepage >= 0:
+            booleannumbertitlepage = False
+        elif numbertitlepage < 2:
+            booleannumbertitlepage = False
+        else:
+            booleannumbertitlepage = True
+
         meta_description = response.xpath(
             '//meta[@name="description"]/@content').get()
         sizemetadescription = len(meta_description)
@@ -59,8 +66,18 @@ class Item(scrapy.Spider):
 
         htitle = response.xpath('//h1/text()').get()
         numberhtitle = len(response.xpath('//h1/text()').getall())
+        if numberhtitle <= 1:
+            boolean_numberhtitle = False
+        else:
+            boolean_numberhtitle = True
 
         imgwithoutalt = response.xpath('//img[not(@alt)]').getall()
+
+        if len(imgwithoutalt) >= 0:
+            booleanimgwithoutalt = False
+        else:
+            booleanimgwithoutalt = True
+
         numberimgwithoutalt = len(response.xpath('//img[not(@alt)]').getall())
 
         imgwithaltempty = response.xpath('//img[@alt=""]/@src').getall()
@@ -97,42 +114,110 @@ class Item(scrapy.Spider):
                 old_tags.append(found_tags)
 
         # Tag Button without Arial-labels
-        buttons_without_arial_tags = False
-        buttons = response.xpath('//button[not(aria-label)]').getall()
+        buttons = response.xpath('//button').getall()
+        buttons_wo_aria = response.xpath('//button[not(@aria-label)]').getall()
+        inputs = response.xpath('//input').getall()
+        inputs_wo_aria = response.xpath('//input[not(@aria-label)]').getall()
 
-        # Tags H1 y H2 Counter
+        # count_buttons = response.xpath('//button/@aria-label').getall()
+        # for i in count_buttons:
+        #     if len(i) <= 6:
+        #         dimension_buttons = True,
+        #     else:
+        #         dimension_buttons = False
+
+        # count_inputs = response.xpath('//input/@aria-label').getall()
+        # for i in count_inputs:
+        #     if len(i) <= 6:
+        #         dimension_inputs = True,
+        #     else:
+        #         dimension_inputs = False
+
+        if ((buttons_wo_aria == buttons) and (inputs_wo_aria == inputs)):
+            boolean_aria = True
+        else:
+            boolean_aria = False
+
+            # Tags H1 y H2 Counter
         number_tags_h1 = len(response.xpath('//h1/text()').getall())
         number_tags_h2 = len(response.xpath('//h2/text()').getall())
 
         # Language Tag
         language_tag = response.xpath('/html/@lang').get()
+        if language_tag >= 0:
+            booleanlanguage_tag = False
+        else:
+            booleanlanguage_tag = True
 
         # Semanthic Structure
         # Header is True?
         header = False
-        header_found = response.xpath('//head').getall()
+        header_found = response.xpath('//header').getall()
         if len(header_found) == 1:
             header = True
 
         # Body is True?
-        body = False
-        body_found = response.xpath('//body')
-        if len(body_found) == 1:
-            body = True
+        main = False
+        main_found = response.xpath('//main').getall()
+        if len(main_found) == 1:
+            main = True
+
+        # Body is section?
+        section = False
+        section_found = response.xpath('//section').getall()
+        if len(section_found) == 1:
+            section = True
 
         # Footer is True?
         footer = False
-        footer_found = response.xpath('//footer')
+        footer_found = response.xpath('//footer').getall()
         if len(footer_found) == 1:
             footer = True
+
+        if ((footer == True) and (header == True) and (main == True) and (section == True)):
+            boolean_structure_semantic = True
+        else:
+            boolean_structure_semantic = False
 
         yield {
             'date': today,
             'titlepage': titlepage,
+            'metadescription': meta_description,
+
+            'title': "Alternativas Textuales",
+            'description': "Todos los elementos no visuales de la pagina deben incluir la etiqueta alt para facilitar la lectura por el robot de Google.",
+            'boolean': booleanimgwithoutalt,
+            'endpoint': "s",
+
+            'title': "Titulo de Pagina",
+            'description': "Unicamente debe exister una etiqueta title dentro de la estructura de la pagina y el contendo de esta debe ser descriptivo en relación al contenido de la pagina.",
+            'boolean': booleannumbertitlepage,
+            'endpoint': "se",
+
+            'title': "Deaclaración de Idioma",
+            'description': "Se debe especificar el idioma de la pagina con la etiqueta: <html lang=eng>.",
+            'boolean': booleanlanguage_tag,
+            'endpoint': "ee",
+
+            'title': "Estructura Semantica",
+            'description': "La pagina deberia utilizar un mínimo de etiquetas semánticas las cuales son: header, section, footer, main.",
+            'boolean': boolean_structure_semantic,
+            'endpoint': "el endpoint a consular para este feature",
+
+            'title': "Etiqueta Arial-label",
+            'description': "Las etiquetas de button e input deberian tener el atributo aria-label y el contenido de este debe ser superior a 6 caracteres.",
+            'boolean': boolean_aria,
+            'endpoint': "el endpoint a consular para este feature",
+
+            "title": "Jerarquias Textuales",
+            "description": "La etiquetas de titulos deben seguir un jerarquia de acuerdo a su orden, solo deberia usarse una vez la etiqueta <h1> por ejemplo.",
+            "boolean": boolean_numberhtitle,
+            "endpoint": "el endpoint a consular para este feature"
+
+
             'qtytitlepage': numbertitlepage,
             'lenthtitlepage': sizetitlepage,
             'rigthdimensiontitlepage': rigthdimentiontitlepage,
-            'metadescription': meta_description,
             'lenthmetadescription': sizemetadescription,
             'rigthdimensionmetadescription': rigthdimentionmetadescription,
             'qtymetadescription': numbermeta_description,
