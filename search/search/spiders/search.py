@@ -249,18 +249,16 @@ class Item(scrapy.Spider):
             'facebook': meta_facebook,
             'twitter': meta_twitter,
 
+            'titlepage': titlepage,
             'qtytitlepage': numbertitlepage,
             'lenthtitlepage': sizetitlepage,
             'rigthdimensiontitlepage': rigthdimentiontitlepage,
 
-            'keywords': meta_keywords,
-            'qtymeta_keywords': numbermeta_keywords,
             'h1title': htitle,
             'qtyh1title': numberhtitle,
 
-
-
-
+            'keywords': meta_keywords,
+            'qtymeta_keywords': numbermeta_keywords,
 
             'title_duplicated': title_duplicated,
             'old_tags': old_tags,
