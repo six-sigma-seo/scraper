@@ -113,6 +113,11 @@ class Item(scrapy.Spider):
             if len(found_tags) > 0:
                 old_tags.append(found_tags)
 
+        if old_tags:
+            boolean_old_tags = False
+        else:
+            boolean_old_tags = True
+
         # Tag Button without Arial-labels
         buttons = response.xpath('//button').getall()
         buttons_wo_aria = response.xpath('//button[not(@aria-label)]').getall()
@@ -144,10 +149,10 @@ class Item(scrapy.Spider):
 
         # Language Tag
         language_tag = response.xpath('/html/@lang').get()
-        if language_tag >= 0:
-            booleanlanguage_tag = False
-        else:
+        if language_tag:
             booleanlanguage_tag = True
+        else:
+            booleanlanguage_tag = False
 
         # Semanthic Structure
         # Header is True?
@@ -184,35 +189,45 @@ class Item(scrapy.Spider):
             'titlepage': titlepage,
             'metadescription': meta_description,
 
-            'title': "Alternativas Textuales",
-            'description': "Todos los elementos no visuales de la pagina deben incluir la etiqueta alt para facilitar la lectura por el robot de Google.",
-            'boolean': booleanimgwithoutalt,
-            'endpoint': "s",
+            'titleAT': "Alternativas Textuales",
+            'descriptionAT': "Todos los elementos no visuales de la pagina deben incluir la etiqueta alt para facilitar la lectura por el robot de Google.",
+            'booleanAT': booleanimgwithoutalt,
+            'endpointAT': "s",
 
-            'title': "Titulo de Pagina",
-            'description': "Unicamente debe exister una etiqueta title dentro de la estructura de la pagina y el contendo de esta debe ser descriptivo en relación al contenido de la pagina.",
-            'boolean': booleannumbertitlepage,
-            'endpoint': "se",
+            'titleTP': "Titulo de Pagina",
+            'descriptionTP': "Unicamente debe exister una etiqueta title dentro de la estructura de la pagina y el contendo de esta debe ser descriptivo en relación al contenido de la pagina.",
+            'booleanTP': booleannumbertitlepage,
+            'endpointTP': "se",
 
-            'title': "Deaclaración de Idioma",
-            'description': "Se debe especificar el idioma de la pagina con la etiqueta: <html lang=eng>.",
-            'boolean': booleanlanguage_tag,
-            'endpoint': "ee",
+            'titleDI': "Declaración de Idioma",
+            'descriptionDI': "Se debe especificar el idioma de la pagina con la etiqueta: <html lang=eng>.",
+            'booleanDI': booleanlanguage_tag,
+            'endpointDI': "ee",
 
-            'title': "Estructura Semantica",
-            'description': "La pagina deberia utilizar un mínimo de etiquetas semánticas las cuales son: header, section, footer, main.",
-            'boolean': boolean_structure_semantic,
-            'endpoint': "el endpoint a consular para este feature",
+            'titleES': "Estructura Semantica",
+            'descriptionES': "La pagina deberia utilizar un mínimo de etiquetas semánticas las cuales son: header, section, footer, main.",
+            'booleanES': boolean_structure_semantic,
+            'endpointES': "el endpoint a consular para este feature",
 
-            'title': "Etiqueta Arial-label",
-            'description': "Las etiquetas de button e input deberian tener el atributo aria-label y el contenido de este debe ser superior a 6 caracteres.",
-            'boolean': boolean_aria,
-            'endpoint': "el endpoint a consular para este feature",
+            'titleEA': "Etiqueta Arial-label",
+            'descriptionEA': "Las etiquetas de button e input deberian tener el atributo aria-label y el contenido de este debe ser superior a 6 caracteres.",
+            'booleanEA': boolean_aria,
+            'endpointEA': "el endpoint a consular para este feature",
 
-            "title": "Jerarquias Textuales",
-            "description": "La etiquetas de titulos deben seguir un jerarquia de acuerdo a su orden, solo deberia usarse una vez la etiqueta <h1> por ejemplo.",
-            "boolean": boolean_numberhtitle,
-            "endpoint": "el endpoint a consular para este feature"
+            'titleJT': "Jerarquias Textuales",
+            'descriptionJT': "La etiquetas de titulos deben seguir un jerarquia de acuerdo a su orden, solo deberia usarse una vez la etiqueta <h1> por ejemplo.",
+            'booleanJT': boolean_numberhtitle,
+            'endpointJT': "el endpoint a consular para este feature",
+
+            'titleED': "Etiquetas en Desuso",
+            'descriptionED': "Con el paso de las versiones de html se han dejado de usar ciertas etiquetas, se recomienda su sustitución.",
+            'booleanED': boolean_old_tags,
+            'endpointED': "el endpoint a consular para este feature",
+
+            # 'titleMI': "Meta Información",
+            # 'descriptionMI': "Se recomienda el uso de las etiquetas de meta información para asegurar que el robot de google entienda nuestra pagina. Así como para la correcta representación en redes sociales.",
+            # 'booleanMI': true,
+            # 'endpointMI': "el endpoint a consular para este feature"
 
 
             'qtytitlepage': numbertitlepage,
@@ -241,6 +256,6 @@ class Item(scrapy.Spider):
             'number_tags_h2': number_tags_h2,
             'language_tag': language_tag,
             'header': header,
-            'body': body,
+            # 'body': body,
             'footer': footer
         }
