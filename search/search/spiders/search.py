@@ -93,6 +93,11 @@ class Item(scrapy.Spider):
         meta_twitter = response.xpath(
             '//meta[contains(@name,"twitter")]').getall()
 
+        if (meta_twitter and meta_facebook and meta_google):
+            boolean_meta_sm = True
+        else:
+            boolean_meta_sm = False
+
         # New Features
 
         # Tag Title duplicated
@@ -192,12 +197,12 @@ class Item(scrapy.Spider):
             'titleAT': "Alternativas Textuales",
             'descriptionAT': "Todos los elementos no visuales de la pagina deben incluir la etiqueta alt para facilitar la lectura por el robot de Google.",
             'booleanAT': booleanimgwithoutalt,
-            'endpointAT': "s",
+            'endpointAT': "/textualalternatives",
 
             'titleTP': "Titulo de Pagina",
             'descriptionTP': "Unicamente debe exister una etiqueta title dentro de la estructura de la pagina y el contendo de esta debe ser descriptivo en relación al contenido de la pagina.",
             'booleanTP': booleannumbertitlepage,
-            'endpointTP': "se",
+            'endpointTP': "/titlepage",
 
             'titleDI': "Declaración de Idioma",
             'descriptionDI': "Se debe especificar el idioma de la pagina con la etiqueta: <html lang=eng>.",
@@ -217,38 +222,46 @@ class Item(scrapy.Spider):
             'titleJT': "Jerarquias Textuales",
             'descriptionJT': "La etiquetas de titulos deben seguir un jerarquia de acuerdo a su orden, solo deberia usarse una vez la etiqueta <h1> por ejemplo.",
             'booleanJT': boolean_numberhtitle,
-            'endpointJT': "el endpoint a consular para este feature",
+            'endpointJT': "/textualhierarchies",
 
             'titleED': "Etiquetas en Desuso",
             'descriptionED': "Con el paso de las versiones de html se han dejado de usar ciertas etiquetas, se recomienda su sustitución.",
             'booleanED': boolean_old_tags,
-            'endpointED': "el endpoint a consular para este feature",
+            'endpointED': "/disusedlabels",
 
-            # 'titleMI': "Meta Información",
-            # 'descriptionMI': "Se recomienda el uso de las etiquetas de meta información para asegurar que el robot de google entienda nuestra pagina. Así como para la correcta representación en redes sociales.",
-            # 'booleanMI': true,
-            # 'endpointMI': "el endpoint a consular para este feature"
+            'titleMI': "Meta Información",
+            'descriptionMI': "Se recomienda el uso de las etiquetas de meta información para asegurar que el robot de google entienda nuestra pagina. Así como para la correcta representación en redes sociales.",
+            'booleanMI':  boolean_meta_sm,
+            'endpointMI': "/metadescription",
 
-
-            'qtytitlepage': numbertitlepage,
-            'lenthtitlepage': sizetitlepage,
-            'rigthdimensiontitlepage': rigthdimentiontitlepage,
-            'lenthmetadescription': sizemetadescription,
-            'rigthdimensionmetadescription': rigthdimentionmetadescription,
-            'qtymetadescription': numbermeta_description,
-            'keywords': meta_keywords,
-            'qtymeta_keywords': numbermeta_keywords,
-            'h1title': htitle,
-            'qtyh1title': numberhtitle,
             'imgwithoutalt': imgwithoutalt,
             'qtyimgwithoutalt': numberimgwithoutalt,
             'imgwithaltempty': imgwithaltempty,
             'qtyimgwithaltempty': numberimgwithaltempty,
             'totalimg': totalimg,
             'percentajeemptyaltinimg': percentajeemptyaltinimg,
+
+            'metadescription': meta_description,
+            'lenthmetadescription': sizemetadescription,
+            'rigthdimensionmetadescription': rigthdimentionmetadescription,
+            'qtymetadescription': numbermeta_description,
             'google': meta_google,
             'facebook': meta_facebook,
             'twitter': meta_twitter,
+
+            'qtytitlepage': numbertitlepage,
+            'lenthtitlepage': sizetitlepage,
+            'rigthdimensiontitlepage': rigthdimentiontitlepage,
+
+            'keywords': meta_keywords,
+            'qtymeta_keywords': numbermeta_keywords,
+            'h1title': htitle,
+            'qtyh1title': numberhtitle,
+
+
+
+
+
             'title_duplicated': title_duplicated,
             'old_tags': old_tags,
             'buttons_without_arial_tags': buttons,
