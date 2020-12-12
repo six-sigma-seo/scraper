@@ -95,20 +95,32 @@ class Item(scrapy.Spider):
         buttons_without_arial_tags = False
         buttons = response.xpath('//button[not(aria-label)]').getall()
 
-
-
-
         # Tags H1 y H2 Counter
-        number_tags_h1 = None
-        number_tags_h2 = None
+        number_tags_h1 = len(response.xpath('//h1/text()').getall())
+        number_tags_h2 = len(response.xpath('//h2/text()').getall())
 
         # Language Tag
-        language_tag = False
+        language_tag = response.xpath('/html/@lang').get()
 
         # Semanthic Structure
+        # Header is True?
         header = False
+        header_found = response.xpath('//head').getall()
+        if len(header_found) == 1:
+            header = True
+
+
+        # Body is True?
         body = False
+        body_found = response.xpath('//body')
+        if len(body_found) == 1:
+            body = True
+
+        # Footer is True?
         footer = False
+        footer_found = response.xpath('//footer')
+        if len(footer_found) == 1:
+            footer = True
         
         yield {
             'date': today,
@@ -138,6 +150,7 @@ class Item(scrapy.Spider):
             'buttons_without_arial_tags': buttons,
             'number_tags_h1': number_tags_h1,
             'number_tags_h2': number_tags_h2,
+            'language_tag': language_tag,
             'header': header,
             'body': body,
             'footer': footer
