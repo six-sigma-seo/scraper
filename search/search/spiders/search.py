@@ -23,12 +23,18 @@ class Item(scrapy.Spider):
     def parse(self, response):
         today = datetime.date.today().strftime('%d-%m-%Y')
         titlepage = response.xpath('//title/text()').get()
-        sizetitlepage = len(titlepage)
+        if titlepage == None:
+            sizetitlepage = False
+        else:
+            sizetitlepage = len(titlepage)
+
         if sizetitlepage == 0:
             rigthdimentiontitlepage = 'untitle'
         elif sizetitlepage <= 60 and sizetitlepage >= 50:
             rigthdimentiontitlepage = True
         elif sizetitlepage > 60:
+            rigthdimentiontitlepage = False
+        elif sizetitlepage == False:
             rigthdimentiontitlepage = False
         else:
             rigthdimentiontitlepage = False
@@ -90,7 +96,6 @@ class Item(scrapy.Spider):
             if len(found_tags) > 0:
                 old_tags.append(found_tags)
 
-
         # Tag Button without Arial-labels
         buttons_without_arial_tags = False
         buttons = response.xpath('//button[not(aria-label)]').getall()
@@ -109,7 +114,6 @@ class Item(scrapy.Spider):
         if len(header_found) == 1:
             header = True
 
-
         # Body is True?
         body = False
         body_found = response.xpath('//body')
@@ -121,7 +125,7 @@ class Item(scrapy.Spider):
         footer_found = response.xpath('//footer')
         if len(footer_found) == 1:
             footer = True
-        
+
         yield {
             'date': today,
             'titlepage': titlepage,
